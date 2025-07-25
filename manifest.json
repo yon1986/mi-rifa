@@ -1,0 +1,19 @@
+{
+  "id": "rifa-v1",
+  "name": "RIFA",
+  "version": "1.0.0",
+  "description": "Participá en rifas rápidas y seguras usando tu identidad Worldcoin y WLD.",
+  "icon": "https://raw.githubusercontent.com/yon1986/mi-rifa/main/public/icon.png",
+  "theme_color": "#007BFF",
+  "background_color": "#FFFFFF",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["games", "tools", "utilities"],
+  "screenshots": [],
+  "author": {
+    "name": "Jhonny Farfán",
+    "email": "jhonnyfarfanoficial@gmail.com"
+  },
+  "default_locale": "es"
+}
