@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ModalConfirmacion from './ModalConfirmacion';
 
 interface Props {
-  onVolver: () => void;
   numerosVendidos: number[];
   setNumerosVendidos: React.Dispatch<React.SetStateAction<number[]>>;
   totalNumeros: number;
@@ -10,17 +9,18 @@ interface Props {
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
   setSaldoWLD: React.Dispatch<React.SetStateAction<number>>;
+  onVolver: () => void;
 }
 
 const SeleccionarNumeros: React.FC<Props> = ({
-  onVolver,
   numerosVendidos,
   setNumerosVendidos,
   totalNumeros,
   misNumeros,
   setMisNumeros,
   saldoWLD,
-  setSaldoWLD
+  setSaldoWLD,
+  onVolver,
 }) => {
   const [numeroSeleccionado, setNumeroSeleccionado] = useState<number | null>(null);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -45,42 +45,36 @@ const SeleccionarNumeros: React.FC<Props> = ({
       setSaldoWLD(saldoWLD - 1);
       setMostrarModal(false);
       setMensajeExito(true);
-
       setTimeout(() => setMensajeExito(false), 2000);
-
-      if (numerosVendidos.length + 1 === totalNumeros) {
-        console.log("Todos los números vendidos");
-      }
     }
   };
 
   return (
-    <div className="p-4 text-center">
-      <h1 className="text-2xl font-bold mb-4">Seleccionar Números</h1>
-      <p className="mb-2">Saldo disponible: {saldoWLD} WLD</p>
-      <p className="mb-4">Total números: {totalNumeros}</p>
+    <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-sm text-center">
+      <h1 className="text-2xl font-bold text-purple-800 mb-4">Adquirir un número</h1>
+      <p className="text-gray-700 mb-4">
+        Saldo disponible: <span className="font-semibold">{saldoWLD} WLD</span>
+      </p>
 
       <button
         onClick={seleccionarNumero}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4"
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full font-semibold mb-4 transition"
       >
-        Adquirir un número
+        Seleccionar número aleatorio
       </button>
 
-      <div className="mb-4">
-        <button
-          onClick={onVolver}
-          className="bg-gray-500 text-white px-3 py-1 rounded-md"
-        >
-          Volver
-        </button>
-      </div>
+      <button
+        onClick={onVolver}
+        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg w-full font-semibold transition"
+      >
+        Volver
+      </button>
 
-      {mensajeExito && <p className="text-green-500">¡Número comprado con éxito!</p>}
+      {mensajeExito && <p className="text-green-600 mt-4">¡Número comprado con éxito!</p>}
 
       <ModalConfirmacion
         isOpen={mostrarModal}
-        numero={numeroSeleccionado ?? 0}
+        numero={numeroSeleccionado}
         onConfirm={confirmarCompra}
         onClose={() => setMostrarModal(false)}
       />

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
   isOpen: boolean;
-  numero: number;
+  numero: number | null;
   onConfirm: () => void;
   onClose: () => void;
 }
@@ -23,13 +23,13 @@ const ModalConfirmacion: React.FC<Props> = ({ isOpen, numero, onConfirm, onClose
             initial={{ scale: 0.8, opacity: 0, y: 50 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 50 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            <h3 className="text-2xl font-bold mb-2">¿Confirmás tu número?</h3>
+            <h3 className="text-2xl font-bold mb-2">¿Confirmar tu número?</h3>
             <p className="text-lg mb-4">
-              Comprar el número{' '}
-              <span className="text-purple-600 font-extrabold text-2xl">{numero}</span> por{' '}
-              <strong>1 WLD</strong>
+              Comprar el número{" "}
+              <span className="text-purple-600 font-extrabold text-2xl">{numero}</span>{" "}
+              por <strong>1 WLD</strong>
             </p>
             <div className="flex justify-center gap-4">
               <button
