@@ -4,7 +4,7 @@ import Inicio from './components/Inicio';
 
 function App() {
   const [numerosVendidos, setNumerosVendidos] = useState<number[]>([]);
-  const [totalNumeros, setTotalNumeros] = useState<number>(15);
+  const [totalNumeros] = useState<number>(15); // ❌ quitamos setTotalNumeros
   const [misNumeros, setMisNumeros] = useState<number[]>([]);
   const [saldoWLD, setSaldoWLD] = useState<number>(5);
 
