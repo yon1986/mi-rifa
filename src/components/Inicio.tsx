@@ -6,7 +6,6 @@ interface Props {
   numerosVendidos: number[];
   setNumerosVendidos: React.Dispatch<React.SetStateAction<number[]>>;
   totalNumeros: number;
-  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>;
   misNumeros: number[];
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
@@ -18,7 +17,6 @@ const Inicio: React.FC<Props> = ({
   numerosVendidos,
   setNumerosVendidos,
   totalNumeros,
-  setTotalNumeros,
   misNumeros,
   setMisNumeros,
   saldoWLD,
@@ -28,7 +26,6 @@ const Inicio: React.FC<Props> = ({
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeExito, setMensajeExito] = useState(false);
 
-  // Función para seleccionar número
   const seleccionarNumero = () => {
     if (numerosVendidos.length < totalNumeros) {
       let numero: number;
@@ -41,7 +38,6 @@ const Inicio: React.FC<Props> = ({
     }
   };
 
-  // Confirmar compra
   const confirmarCompra = () => {
     if (numeroSeleccionado !== null && saldoWLD > 0) {
       setNumerosVendidos([...numerosVendidos, numeroSeleccionado]);
@@ -50,10 +46,8 @@ const Inicio: React.FC<Props> = ({
       setMostrarModal(false);
       setMensajeExito(true);
 
-      // Ocultar mensaje de éxito después de 2 segundos
       setTimeout(() => setMensajeExito(false), 2000);
 
-      // Si ya se completaron los números, actualizar
       if (numerosVendidos.length + 1 === totalNumeros) {
         console.log("Todos los números vendidos");
       }
@@ -86,7 +80,6 @@ const Inicio: React.FC<Props> = ({
 
       <ModalConfirmacion
         isOpen={mostrarModal}
-        // Si es null, le pasamos 0 para no romper el tipo de número
         numero={numeroSeleccionado ?? 0}
         onConfirm={confirmarCompra}
         onClose={() => setMostrarModal(false)}

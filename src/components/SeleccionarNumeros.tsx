@@ -1,5 +1,4 @@
-// @ts-ignore
-import { useState } from 'react';
+import React, { useState } from 'react';
 import ModalConfirmacion from './ModalConfirmacion';
 
 interface Props {
@@ -24,144 +23,67 @@ const SeleccionarNumeros: React.FC<Props> = ({
   setSaldoWLD
 }) => {
   const [numeroSeleccionado, setNumeroSeleccionado] = useState<number | null>(null);
-  const [modoManual, setModoManual] = useState<boolean>(true);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState(false);
 
-  const puedeComprar = () => {
-    if (numerosVendidos.length >= totalNumeros) {
-      alert("Ya se vendieron todos los números.");
-      return false;
+  const seleccionarNumero = () => {
+    if (numerosVendidos.length < totalNumeros) {
+      let numero: number;
+      do {
+        numero = Math.floor(Math.random() * totalNumeros) + 1;
+      } while (numerosVendidos.includes(numero));
+
+      setNumeroSeleccionado(numero);
+      setMostrarModal(true);
     }
-    if (misNumeros.length >= 5) {
-      alert("Ya tienes el máximo de 5 números.");
-      return false;
-    }
-    if (saldoWLD <= 0) {
-      alert("No tienes saldo suficiente para adquirir otro número.");
-      return false;
-    }
-    return true;
   };
 
-  const procesarCompra = (numero: number) => {
-    if (numerosVendidos.includes(numero)) {
-      alert("Ese número ya fue adquirido.");
-      setNumeroSeleccionado(null);
-      return;
+  const confirmarCompra = () => {
+    if (numeroSeleccionado !== null && saldoWLD > 0) {
+      setNumerosVendidos([...numerosVendidos, numeroSeleccionado]);
+      setMisNumeros([...misNumeros, numeroSeleccionado]);
+      setSaldoWLD(saldoWLD - 1);
+      setMostrarModal(false);
+      setMensajeExito(true);
+
+      setTimeout(() => setMensajeExito(false), 2000);
+
+      if (numerosVendidos.length + 1 === totalNumeros) {
+        console.log("Todos los números vendidos");
+      }
     }
-
-    setNumerosVendidos((prev) => [...prev, numero]);
-    setMisNumeros((prev) => [...prev, numero]);
-    setSaldoWLD((prev) => prev - 1);
-
-    setTimeout(() => {
-      setNumeroSeleccionado(null);
-    }, 1000);
   };
-
-  const comprarAleatorio = () => {
-    if (!puedeComprar()) return;
-
-    let numero;
-    do {
-      numero = Math.floor(Math.random() * totalNumeros) + 1;
-    } while (numerosVendidos.includes(numero));
-
-    setNumeroSeleccionado(numero);
-  };
-
-  const manejarClickNumero = (numero: number) => {
-    if (!puedeComprar()) return;
-    if (numerosVendidos.includes(numero)) return;
-
-    setNumeroSeleccionado(numero);
-  };
-
-  const numerosDisponibles = Array.from({ length: totalNumeros }, (_, i) => i + 1);
 
   return (
-    <div className="min-h-screen px-4 py-6 text-white bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-400 flex flex-col items-center">
-      <h2 className="text-4xl font-extrabold mb-4">🎟 Comprar Números</h2>
-
-      <p className="text-lg mb-1">💰 Saldo actual: <span className="font-bold">{saldoWLD} WLD</span></p>
-      <p className="text-lg mb-1">🎯 Faltan <span className="font-bold">{totalNumeros - numerosVendidos.length}</span> números para cerrar la rifa.</p>
-      <p className="text-lg mb-4">📌 Máximo 5 números por jugador.</p>
+    <div className="p-4 text-center">
+      <h1 className="text-2xl font-bold mb-4">Seleccionar Números</h1>
+      <p className="mb-2">Saldo disponible: {saldoWLD} WLD</p>
+      <p className="mb-4">Total números: {totalNumeros}</p>
 
       <button
-        onClick={() => setModoManual(!modoManual)}
-        className={`mb-4 px-6 py-3 rounded-full font-bold shadow-xl transition text-lg ${
-          modoManual
-            ? 'bg-yellow-300 text-purple-800 hover:bg-yellow-400'
-            : 'bg-green-400 text-white hover:bg-green-500'
-        }`}
+        onClick={seleccionarNumero}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4"
       >
-        {modoManual ? '🎲 Cambiar a modo aleatorio' : '🖐️ Cambiar a modo manual'}
+        Adquirir un número
       </button>
 
-      {modoManual ? (
-        <div className="bg-white/20 rounded-xl p-4 w-full max-w-md shadow backdrop-blur-sm mb-6">
-          <h3 className="text-xl font-semibold mb-3 text-center">Toca un número para adquirirlo</h3>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {numerosDisponibles.map((num) => {
-              const vendido = numerosVendidos.includes(num);
-              const esMio = misNumeros.includes(num);
-
-              return (
-                <button
-                  key={num}
-                  onClick={() => manejarClickNumero(num)}
-                  disabled={vendido}
-                  className={`w-12 h-12 rounded-full text-lg font-bold border-2 shadow ${
-                    vendido
-                      ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                      : esMio
-                      ? 'bg-green-400 text-white border-green-500'
-                      : 'bg-white text-purple-700 hover:bg-yellow-200'
-                  }`}
-                >
-                  {num}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ) : (
+      <div className="mb-4">
         <button
-          onClick={comprarAleatorio}
-          className="mb-6 px-6 py-4 bg-yellow-300 text-purple-800 text-xl rounded-2xl shadow-xl hover:bg-yellow-400 transition font-bold"
+          onClick={onVolver}
+          className="bg-gray-500 text-white px-3 py-1 rounded-md"
         >
-          🎲 Comprar número aleatorio
+          Volver
         </button>
-      )}
-
-      <div className="bg-white/20 rounded-xl p-4 w-full max-w-md shadow backdrop-blur-sm mb-6">
-        <h3 className="text-xl font-semibold mb-2 text-center">Tus números:</h3>
-        {misNumeros.length > 0 ? (
-          <div className="flex flex-wrap gap-2 justify-center text-lg">
-            {misNumeros.map(num => (
-              <span key={num} className="px-3 py-1 bg-white text-purple-700 font-bold rounded-full shadow-sm">
-                {num}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <p className="text-white/80 text-center">Aún no has adquirido ningún número.</p>
-        )}
       </div>
 
-      <button
-        onClick={onVolver}
-        className="mt-auto bg-gray-200 text-gray-800 px-6 py-2 rounded-xl hover:bg-gray-300 transition"
-      >
-        🔙 Volver
-      </button>
+      {mensajeExito && <p className="text-green-500">¡Número comprado con éxito!</p>}
 
-      {numeroSeleccionado !== null && (
-        <ModalConfirmacion
-          numero={numeroSeleccionado}
-          onConfirmar={() => procesarCompra(numeroSeleccionado)}
-          onCancelar={() => setNumeroSeleccionado(null)}
-        />
-      )}
+      <ModalConfirmacion
+        isOpen={mostrarModal}
+        numero={numeroSeleccionado ?? 0}
+        onConfirm={confirmarCompra}
+        onClose={() => setMostrarModal(false)}
+      />
     </div>
   );
 };
