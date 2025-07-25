@@ -6,7 +6,7 @@ interface Props {
   numerosVendidos: number[];
   setNumerosVendidos: React.Dispatch<React.SetStateAction<number[]>>;
   totalNumeros: number;
-  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>; // ✅ Agregado
+  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>;
   misNumeros: number[];
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
@@ -55,7 +55,7 @@ const Inicio: React.FC<Props> = ({
 
       // Si ya se completaron los números, actualizar
       if (numerosVendidos.length + 1 === totalNumeros) {
-        setTotalNumeros(totalNumeros); // Aquí puedes redirigir a resultados
+        console.log("Todos los números vendidos");
       }
     }
   };
@@ -86,7 +86,8 @@ const Inicio: React.FC<Props> = ({
 
       <ModalConfirmacion
         isOpen={mostrarModal}
-        numero={numeroSeleccionado}
+        // Si es null, le pasamos 0 para no romper el tipo de número
+        numero={numeroSeleccionado ?? 0}
         onConfirm={confirmarCompra}
         onClose={() => setMostrarModal(false)}
       />
