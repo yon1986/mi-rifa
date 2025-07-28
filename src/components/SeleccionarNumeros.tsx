@@ -7,6 +7,7 @@ interface Props {
   numerosVendidos: number[];
   setNumerosVendidos: React.Dispatch<React.SetStateAction<number[]>>;
   totalNumeros: number;
+  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>; // ✅ agregado
   misNumeros: number[];
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
@@ -18,6 +19,7 @@ const SeleccionarNumeros: React.FC<Props> = ({
   numerosVendidos,
   setNumerosVendidos,
   totalNumeros,
+  setTotalNumeros, // ✅ agregado para que sea accesible
   misNumeros,
   setMisNumeros,
   saldoWLD,
