@@ -6,7 +6,11 @@ import Resultados from './Resultados';
 import ComoSeJuega from './ComoSeJuega';
 import { motion } from 'framer-motion';
 
-const Inicio = () => {
+interface Props {
+  userData: any; // Recibimos los datos del usuario desde App.tsx
+}
+
+const Inicio: React.FC<Props> = ({ userData }) => {
   const [mostrarModulo, setMostrarModulo] = useState<"numeros" | "misNumeros" | "resultados" | "comoJugar" | null>(null);
   const [numerosVendidos, setNumerosVendidos] = useState<number[]>([]);
   const [misNumeros, setMisNumeros] = useState<number[]>([]);
@@ -22,6 +26,16 @@ const Inicio = () => {
 
   return (
     <div className="h-screen w-full bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-400 text-white flex flex-col justify-between">
+      {/* Mostrar saludo con los datos del usuario */}
+      <div className="bg-white/10 text-center py-3">
+        <p className="text-lg">
+          👋 Bienvenido, <span className="font-bold">{userData?.nullifier_hash?.slice(0, 6) || "Usuario"}</span>
+        </p>
+        <p className="text-sm text-white/70">
+          Saldo simulado: <span className="font-bold">{saldoWLD} WLD</span>
+        </p>
+      </div>
+
       {mostrarModulo === null ? (
         <>
           <motion.div
