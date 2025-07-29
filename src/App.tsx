@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Inicio from './components/Inicio';
 
 const App: React.FC = () => {
-  // Eliminamos setUserData ya que no se usa
   const [userData] = useState<any>(null);
   const [sesionIniciada, setSesionIniciada] = useState(false);
 

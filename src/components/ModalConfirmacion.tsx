@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
-  numero?: number; // opcional
+  numero?: number;
   onConfirmar?: () => void;
   onCancelar?: () => void;
-  tipo?: "confirmacion" | "exito";
+  tipo?: "confirmacion" | "exito" | "error";
   mensaje?: string;
 }
 
@@ -17,7 +17,7 @@ const ModalConfirmacion: React.FC<Props> = ({
   mensaje
 }) => {
   
-  // Si es modal de éxito, lo cerramos automáticamente después de 2 segundos
+  // Cerrar automáticamente solo si es exito
   useEffect(() => {
     if (tipo === "exito" && onCancelar) {
       const timer = setTimeout(() => {
@@ -64,6 +64,19 @@ const ModalConfirmacion: React.FC<Props> = ({
                   className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition font-semibold"
                 >
                   ❌ Cancelar
+                </button>
+              </div>
+            </>
+          ) : tipo === "error" ? (
+            <>
+              <h3 className="text-2xl font-bold mb-4 text-red-600">⚠️ Error</h3>
+              <p className="text-lg text-purple-700">{mensaje}</p>
+              <div className="mt-4">
+                <button
+                  onClick={onCancelar}
+                  className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition font-semibold"
+                >
+                  Cerrar
                 </button>
               </div>
             </>

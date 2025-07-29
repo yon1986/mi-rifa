@@ -32,10 +32,10 @@ const SeleccionarNumeros: React.FC<Props> = ({
   const [mostrarExito, setMostrarExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
-  // Nuevo: modal de error bonito
   const [mostrarError, setMostrarError] = useState(false);
   const [mensajeError, setMensajeError] = useState("");
 
+  // Validación al seleccionar
   const puedeComprar = (): boolean => {
     if (numerosVendidos.length >= totalNumeros) {
       setMensajeError("Ya se vendieron todos los números.");
@@ -50,7 +50,14 @@ const SeleccionarNumeros: React.FC<Props> = ({
     return true;
   };
 
+  // Confirmar compra
   const procesarCompra = (numero: number) => {
+    if (saldoWLD <= 0) {
+      setMensajeError("No tienes saldo suficiente para adquirir otro número.");
+      setMostrarError(true);
+      setNumeroSeleccionado(null);
+      return;
+    }
     if (numerosVendidos.includes(numero)) {
       setMensajeError("Ese número ya fue adquirido.");
       setMostrarError(true);
@@ -58,20 +65,19 @@ const SeleccionarNumeros: React.FC<Props> = ({
       return;
     }
 
+    // Compra exitosa
     setNumerosVendidos((prev) => [...prev, numero]);
     setMisNumeros((prev) => [...prev, numero]);
     setSaldoWLD((prev) => prev - 1);
 
     setMensajeExito(`Compraste el número ${numero} correctamente.`);
     setMostrarExito(true);
-
     setNumeroSeleccionado(null);
 
     setTimeout(() => {
       setMostrarExito(false);
     }, 2000);
 
-    // Si ya se vendieron todos los números, avisamos a Inicio.tsx
     if (numerosVendidos.length + 1 === totalNumeros) {
       setTimeout(() => {
         onListaCompleta();
@@ -93,7 +99,6 @@ const SeleccionarNumeros: React.FC<Props> = ({
   const manejarClickNumero = (numero: number) => {
     if (!puedeComprar()) return;
     if (numerosVendidos.includes(numero)) return;
-
     setNumeroSeleccionado(numero);
   };
 
@@ -111,7 +116,6 @@ const SeleccionarNumeros: React.FC<Props> = ({
       </p>
       <p className="text-lg mb-4">📌 Puedes comprar todos los números que quieras.</p>
 
-      {/* Cambiar modo */}
       <button
         onClick={() => setModoManual(!modoManual)}
         className={`mb-4 px-6 py-3 rounded-full font-bold shadow-xl transition text-lg ${
@@ -123,7 +127,6 @@ const SeleccionarNumeros: React.FC<Props> = ({
         {modoManual ? '🎲 Cambiar a modo aleatorio' : '🖐️ Cambiar a modo manual'}
       </button>
 
-      {/* Selección manual */}
       {modoManual ? (
         <div className="bg-white/20 rounded-xl p-4 w-full max-w-md shadow backdrop-blur-sm mb-6">
           <h3 className="text-xl font-semibold mb-3 text-center">
@@ -167,7 +170,6 @@ const SeleccionarNumeros: React.FC<Props> = ({
         </button>
       )}
 
-      {/* Mis números */}
       <div className="bg-white/20 rounded-xl p-4 w-full max-w-md shadow backdrop-blur-sm mb-6">
         <h3 className="text-xl font-semibold mb-2 text-center">Tus números:</h3>
         {misNumeros.length > 0 ? (
@@ -188,7 +190,6 @@ const SeleccionarNumeros: React.FC<Props> = ({
         )}
       </div>
 
-      {/* Botón volver */}
       <button
         onClick={onVolver}
         className="mt-auto bg-gray-200 text-gray-800 px-6 py-2 rounded-xl hover:bg-gray-300 transition"
@@ -207,13 +208,16 @@ const SeleccionarNumeros: React.FC<Props> = ({
       )}
 
       {mostrarExito && (
-        <ModalConfirmacion tipo="exito" mensaje={mensajeExito} />
-      )}
-
-      {/* Modal de error bonito */}
-      {mostrarError && (
         <ModalConfirmacion
           tipo="exito"
+          mensaje={mensajeExito}
+          onCancelar={() => setMostrarExito(false)}
+        />
+      )}
+
+      {mostrarError && (
+        <ModalConfirmacion
+          tipo="error"
           mensaje={mensajeError}
           onCancelar={() => setMostrarError(false)}
         />
