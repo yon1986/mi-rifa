@@ -12,7 +12,7 @@ interface Props {
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
   setSaldoWLD: React.Dispatch<React.SetStateAction<number>>;
-  onListaCompleta: () => void; // 🔹 Nuevo
+  onListaCompleta: () => void; 
 }
 
 const SeleccionarNumeros: React.FC<Props> = ({
@@ -32,7 +32,7 @@ const SeleccionarNumeros: React.FC<Props> = ({
   const [mostrarExito, setMostrarExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
-  const puedeComprar = () => {
+  const puedeComprar = (): boolean => {
     if (numerosVendidos.length >= totalNumeros) {
       alert("Ya se vendieron todos los números.");
       return false;
@@ -64,18 +64,18 @@ const SeleccionarNumeros: React.FC<Props> = ({
       setMostrarExito(false);
     }, 2000);
 
-    // 🔹 Si ya se vendieron todos los números, avisamos a Inicio.tsx
-    setTimeout(() => {
-      if (numerosVendidos.length + 1 === totalNumeros) {
+    // Si ya se vendieron todos los números, avisamos a Inicio.tsx
+    if (numerosVendidos.length + 1 === totalNumeros) {
+      setTimeout(() => {
         onListaCompleta();
-      }
-    }, 500);
+      }, 500);
+    }
   };
 
   const comprarAleatorio = () => {
     if (!puedeComprar()) return;
 
-    let numero;
+    let numero: number;
     do {
       numero = Math.floor(Math.random() * totalNumeros) + 1;
     } while (numerosVendidos.includes(numero));
@@ -96,10 +96,15 @@ const SeleccionarNumeros: React.FC<Props> = ({
     <div className="min-h-screen px-4 py-6 text-white bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-400 flex flex-col items-center">
       <h2 className="text-4xl font-extrabold mb-4">🎟 Comprar Números</h2>
 
-      <p className="text-lg mb-1">💰 Saldo actual: <span className="font-bold">{saldoWLD} WLD</span></p>
-      <p className="text-lg mb-1">🎯 Faltan <span className="font-bold">{totalNumeros - numerosVendidos.length}</span> números para cerrar la rifa.</p>
+      <p className="text-lg mb-1">
+        💰 Saldo actual: <span className="font-bold">{saldoWLD} WLD</span>
+      </p>
+      <p className="text-lg mb-1">
+        🎯 Faltan <span className="font-bold">{totalNumeros - numerosVendidos.length}</span> números para cerrar la rifa.
+      </p>
       <p className="text-lg mb-4">📌 Puedes comprar todos los números que quieras.</p>
 
+      {/* Cambiar modo */}
       <button
         onClick={() => setModoManual(!modoManual)}
         className={`mb-4 px-6 py-3 rounded-full font-bold shadow-xl transition text-lg ${
@@ -111,9 +116,12 @@ const SeleccionarNumeros: React.FC<Props> = ({
         {modoManual ? '🎲 Cambiar a modo aleatorio' : '🖐️ Cambiar a modo manual'}
       </button>
 
+      {/* Selección manual */}
       {modoManual ? (
         <div className="bg-white/20 rounded-xl p-4 w-full max-w-md shadow backdrop-blur-sm mb-6">
-          <h3 className="text-xl font-semibold mb-3 text-center">Toca un número para adquirirlo</h3>
+          <h3 className="text-xl font-semibold mb-3 text-center">
+            Toca un número para adquirirlo
+          </h3>
           <div className="flex flex-wrap gap-2 justify-center">
             {numerosDisponibles.map((num) => {
               const vendido = numerosVendidos.includes(num);
@@ -152,21 +160,28 @@ const SeleccionarNumeros: React.FC<Props> = ({
         </button>
       )}
 
+      {/* Mis números */}
       <div className="bg-white/20 rounded-xl p-4 w-full max-w-md shadow backdrop-blur-sm mb-6">
         <h3 className="text-xl font-semibold mb-2 text-center">Tus números:</h3>
         {misNumeros.length > 0 ? (
           <div className="flex flex-wrap gap-2 justify-center text-lg">
-            {misNumeros.map(num => (
-              <span key={num} className="px-3 py-1 bg-white text-purple-700 font-bold rounded-full shadow-sm">
+            {misNumeros.map((num) => (
+              <span
+                key={num}
+                className="px-3 py-1 bg-white text-purple-700 font-bold rounded-full shadow-sm"
+              >
                 {num}
               </span>
             ))}
           </div>
         ) : (
-          <p className="text-white/80 text-center">Aún no has adquirido ningún número.</p>
+          <p className="text-white/80 text-center">
+            Aún no has adquirido ningún número.
+          </p>
         )}
       </div>
 
+      {/* Botón volver */}
       <button
         onClick={onVolver}
         className="mt-auto bg-gray-200 text-gray-800 px-6 py-2 rounded-xl hover:bg-gray-300 transition"
@@ -174,6 +189,7 @@ const SeleccionarNumeros: React.FC<Props> = ({
         🔙 Volver
       </button>
 
+      {/* Modales */}
       {numeroSeleccionado !== null && (
         <ModalConfirmacion
           numero={numeroSeleccionado}
@@ -184,10 +200,7 @@ const SeleccionarNumeros: React.FC<Props> = ({
       )}
 
       {mostrarExito && (
-        <ModalConfirmacion
-          tipo="exito"
-          mensaje={mensajeExito}
-        />
+        <ModalConfirmacion tipo="exito" mensaje={mensajeExito} />
       )}
     </div>
   );

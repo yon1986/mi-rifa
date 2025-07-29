@@ -15,31 +15,36 @@ const Inicio: React.FC<Props> = ({ userData }) => {
   const [mostrarModulo, setMostrarModulo] = useState<
     "numeros" | "misNumeros" | "resultados" | "comoJugar" | "historial" | null
   >(null);
+
   const [ganadorPendiente, setGanadorPendiente] = useState<any>(null);
 
   const [numerosVendidos, setNumerosVendidos] = useState<number[]>(() => {
     const guardados = localStorage.getItem("numerosVendidos");
     return guardados ? JSON.parse(guardados) : [];
   });
+
   const [misNumeros, setMisNumeros] = useState<number[]>(() => {
     const guardados = localStorage.getItem("misNumeros");
     return guardados ? JSON.parse(guardados) : [];
   });
+
   const [totalNumeros, setTotalNumeros] = useState<number>(() => {
     return parseInt(localStorage.getItem("totalNumeros") || "15");
   });
+
   const [saldoWLD, setSaldoWLD] = useState<number>(5);
 
+  // Calcular premio dinámico
   const premio = (totalNumeros * 0.95).toFixed(2);
 
-  // Guardar estado en localStorage
+  // Guardar estado en localStorage cuando cambian los datos
   useEffect(() => {
     localStorage.setItem("numerosVendidos", JSON.stringify(numerosVendidos));
     localStorage.setItem("misNumeros", JSON.stringify(misNumeros));
     localStorage.setItem("totalNumeros", totalNumeros.toString());
   }, [numerosVendidos, misNumeros, totalNumeros]);
 
-  // Ver si hay ganador pendiente al abrir
+  // Comprobar si hay ganador pendiente al abrir la app
   useEffect(() => {
     const ganador = localStorage.getItem("ganadorPendiente");
     if (ganador) {
@@ -48,7 +53,7 @@ const Inicio: React.FC<Props> = ({ userData }) => {
     }
   }, []);
 
-  // Al terminar lista, elegir ganador y guardar en historial
+  // Elegir ganador al terminar lista
   const manejarListaCompleta = () => {
     const numeroGanador =
       numerosVendidos[Math.floor(Math.random() * numerosVendidos.length)];
@@ -59,7 +64,7 @@ const Inicio: React.FC<Props> = ({ userData }) => {
       fecha: new Date().toLocaleString(),
       totalNumeros,
       numeroGanador,
-      premio
+      premio,
     });
     localStorage.setItem("historial", JSON.stringify(historial));
 
@@ -68,14 +73,14 @@ const Inicio: React.FC<Props> = ({ userData }) => {
     localStorage.setItem("ganadorPendiente", JSON.stringify(ganador));
     setGanadorPendiente(ganador);
 
-    // Reset para nueva lista
+    // Reset para nueva rifa
     setTotalNumeros((prev) => prev + 5);
     setNumerosVendidos([]);
     setMisNumeros([]);
     setMostrarModulo("resultados");
   };
 
-  // Simulación de saldo dinámico
+  // Simulación de saldo dinámico (solo si userData viene de World ID)
   useEffect(() => {
     if (userData?.nullifier_hash) {
       const saldoSimulado = Math.floor(Math.random() * (20 - 3 + 1)) + 3;
@@ -128,9 +133,9 @@ const Inicio: React.FC<Props> = ({ userData }) => {
                   boxShadow: [
                     "0 0 0px #fff",
                     "0 0 30px #22d3ee",
-                    "0 0 0px #fff"
+                    "0 0 0px #fff",
                   ],
-                  transition: { repeat: Infinity, duration: 2 }
+                  transition: { repeat: Infinity, duration: 2 },
                 }}
                 className="w-full py-4 text-2xl bg-cyan-500 rounded-3xl shadow-2xl hover:bg-cyan-600 transition duration-300 font-bold"
               >
@@ -168,7 +173,7 @@ const Inicio: React.FC<Props> = ({ userData }) => {
             </motion.div>
           </div>
 
-          {/* Números vendidos (siempre visible al final) */}
+          {/* Números vendidos */}
           <motion.div
             className="bg-white/20 rounded-xl p-4 shadow-lg backdrop-blur-sm mx-4 mb-4"
             initial={{ opacity: 0, y: 30 }}

@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
-  numero?: number; // ahora opcional
+  numero?: number; // opcional
   onConfirmar?: () => void;
   onCancelar?: () => void;
-  tipo?: "confirmacion" | "exito"; // 🔹 nuevo
-  mensaje?: string; // 🔹 nuevo
+  tipo?: "confirmacion" | "exito";
+  mensaje?: string;
 }
 
 const ModalConfirmacion: React.FC<Props> = ({
@@ -16,6 +16,17 @@ const ModalConfirmacion: React.FC<Props> = ({
   tipo = "confirmacion",
   mensaje
 }) => {
+  
+  // Si es modal de éxito, lo cerramos automáticamente después de 2 segundos
+  useEffect(() => {
+    if (tipo === "exito" && onCancelar) {
+      const timer = setTimeout(() => {
+        onCancelar();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [tipo, onCancelar]);
+
   return (
     <AnimatePresence>
       <motion.div
