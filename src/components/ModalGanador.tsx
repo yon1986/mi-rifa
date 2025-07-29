@@ -2,13 +2,18 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
-  numeroGanador: number;
-  premio: string;
+  numeroGanador?: number; // lo hacemos opcional por seguridad
+  premio?: string; // opcional
   misNumeros: number[];
   onIrNuevaRifa: () => void;
 }
 
-const ModalGanador: React.FC<Props> = ({ numeroGanador, premio, misNumeros, onIrNuevaRifa }) => {
+const ModalGanador: React.FC<Props> = ({
+  numeroGanador = 0,
+  premio = "0",
+  misNumeros,
+  onIrNuevaRifa
+}) => {
   const soyGanador = misNumeros.includes(numeroGanador);
 
   return (

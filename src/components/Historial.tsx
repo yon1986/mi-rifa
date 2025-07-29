@@ -1,29 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   onVolver: () => void;
 }
 
+interface HistorialItem {
+  fecha: string;
+  totalNumeros: number;
+  numeroGanador: number;
+  premio: string;
+}
+
 const Historial: React.FC<Props> = ({ onVolver }) => {
-  const historial = JSON.parse(localStorage.getItem("historial") || "[]");
+  const [historial, setHistorial] = useState<HistorialItem[]>([]);
+
+  // Cargar historial al montar el componente
+  useEffect(() => {
+    const data = localStorage.getItem("historial");
+    if (data) {
+      setHistorial(JSON.parse(data));
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-400 text-white flex flex-col p-6">
-      <h2 className="text-3xl font-extrabold mb-4 text-center">🕒 Historial de Rifas</h2>
+      <h2 className="text-3xl font-extrabold mb-4 text-center">
+        🕒 Historial de Rifas
+      </h2>
 
       {historial.length === 0 ? (
-        <p className="text-center text-lg text-white/80">Aún no hay rifas terminadas.</p>
+        <p className="text-center text-lg text-white/80">
+          Aún no hay rifas terminadas.
+        </p>
       ) : (
         <div className="flex flex-col gap-4">
-          {historial.map((item: any, index: number) => (
+          {historial.map((item, index) => (
             <div
               key={index}
               className="bg-white/20 rounded-xl p-4 shadow-lg backdrop-blur-sm"
             >
-              <p className="text-lg"><strong>Fecha:</strong> {item.fecha}</p>
-              <p className="text-lg"><strong>Números en rifa:</strong> {item.totalNumeros}</p>
-              <p className="text-lg"><strong>Número ganador:</strong> 🎉 {item.numeroGanador}</p>
-              <p className="text-lg"><strong>Premio:</strong> {item.premio} WLD</p>
+              <p className="text-lg">
+                <strong>Fecha:</strong> {item.fecha}
+              </p>
+              <p className="text-lg">
+                <strong>Números en rifa:</strong> {item.totalNumeros}
+              </p>
+              <p className="text-lg">
+                <strong>Número ganador:</strong> 🎉 {item.numeroGanador}
+              </p>
+              <p className="text-lg">
+                <strong>Premio:</strong> {item.premio} WLD
+              </p>
             </div>
           ))}
         </div>
