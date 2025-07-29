@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SeleccionarNumeros from './SeleccionarNumeros';
 import MisNumeros from './MisNumeros';
 import Resultados from './Resultados';
@@ -15,11 +15,23 @@ const Inicio: React.FC<Props> = ({ userData }) => {
   const [numerosVendidos, setNumerosVendidos] = useState<number[]>([]);
   const [misNumeros, setMisNumeros] = useState<number[]>([]);
   const [totalNumeros, setTotalNumeros] = useState<number>(15);
+
+  // 🔹 Saldo inicial (simulado por defecto en 5)
   const [saldoWLD, setSaldoWLD] = useState<number>(5);
 
   const premio = Math.floor(totalNumeros * 0.95);
 
-  // Mostrar Resultados automáticamente si ya se vendieron todos los números
+  // 🔹 Si el usuario tiene World ID, simulamos saldo dinámico (luego se conecta real al SDK)
+  useEffect(() => {
+    if (userData?.nullifier_hash) {
+      console.log("Usuario con World ID detectado:", userData.nullifier_hash);
+      // Simulamos saldo real entre 3 y 20 WLD
+      const saldoSimulado = Math.floor(Math.random() * (20 - 3 + 1)) + 3;
+      setSaldoWLD(saldoSimulado);
+    }
+  }, [userData]);
+
+  // 🔹 Mostrar Resultados automáticamente si ya se vendieron todos los números
   if (numerosVendidos.length === totalNumeros && mostrarModulo === null) {
     setMostrarModulo("resultados");
   }
@@ -32,7 +44,7 @@ const Inicio: React.FC<Props> = ({ userData }) => {
           👋 Bienvenido, <span className="font-bold">{userData?.nullifier_hash?.slice(0, 6) || "Usuario"}</span>
         </p>
         <p className="text-sm text-white/70">
-          Saldo simulado: <span className="font-bold">{saldoWLD} WLD</span>
+          Saldo disponible: <span className="font-bold">{saldoWLD} WLD</span>
         </p>
       </div>
 

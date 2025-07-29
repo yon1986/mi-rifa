@@ -7,7 +7,7 @@ interface Props {
   numerosVendidos: number[];
   setNumerosVendidos: React.Dispatch<React.SetStateAction<number[]>>;
   totalNumeros: number;
-  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>; // se mantiene en Props
+  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>; 
   misNumeros: number[];
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
@@ -26,6 +26,10 @@ const SeleccionarNumeros: React.FC<Props> = ({
 }) => {
   const [numeroSeleccionado, setNumeroSeleccionado] = useState<number | null>(null);
   const [modoManual, setModoManual] = useState<boolean>(true);
+
+  // Nuevo: estado para modal de éxito
+  const [mostrarExito, setMostrarExito] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState("");
 
   const puedeComprar = () => {
     if (numerosVendidos.length >= totalNumeros) {
@@ -54,9 +58,17 @@ const SeleccionarNumeros: React.FC<Props> = ({
     setMisNumeros((prev) => [...prev, numero]);
     setSaldoWLD((prev) => prev - 1);
 
+    // Mostrar modal de éxito
+    setMensajeExito(`Compraste el número ${numero} correctamente.`);
+    setMostrarExito(true);
+
+    // Cerrar modal de confirmación
+    setNumeroSeleccionado(null);
+
+    // Cerrar modal de éxito automáticamente
     setTimeout(() => {
-      setNumeroSeleccionado(null);
-    }, 1000);
+      setMostrarExito(false);
+    }, 2000);
   };
 
   const comprarAleatorio = () => {
@@ -128,7 +140,12 @@ const SeleccionarNumeros: React.FC<Props> = ({
       ) : (
         <button
           onClick={comprarAleatorio}
-          className="mb-6 px-6 py-4 bg-yellow-300 text-purple-800 text-xl rounded-2xl shadow-xl hover:bg-yellow-400 transition font-bold"
+          disabled={saldoWLD <= 0}
+          className={`mb-6 px-6 py-4 text-xl rounded-2xl shadow-xl font-bold transition ${
+            saldoWLD <= 0
+              ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+              : 'bg-yellow-300 text-purple-800 hover:bg-yellow-400'
+          }`}
         >
           🎲 Comprar número aleatorio
         </button>
@@ -156,11 +173,21 @@ const SeleccionarNumeros: React.FC<Props> = ({
         🔙 Volver
       </button>
 
+      {/* Modal de confirmación */}
       {numeroSeleccionado !== null && (
         <ModalConfirmacion
           numero={numeroSeleccionado}
           onConfirmar={() => procesarCompra(numeroSeleccionado)}
           onCancelar={() => setNumeroSeleccionado(null)}
+          tipo="confirmacion"
+        />
+      )}
+
+      {/* Modal de éxito */}
+      {mostrarExito && (
+        <ModalConfirmacion
+          tipo="exito"
+          mensaje={mensajeExito}
         />
       )}
     </div>

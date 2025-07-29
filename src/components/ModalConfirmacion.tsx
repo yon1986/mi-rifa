@@ -2,12 +2,20 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
-  numero: number;
-  onConfirmar: () => void;
-  onCancelar: () => void;
+  numero?: number; // ahora opcional
+  onConfirmar?: () => void;
+  onCancelar?: () => void;
+  tipo?: "confirmacion" | "exito"; // 🔹 nuevo
+  mensaje?: string; // 🔹 nuevo
 }
 
-const ModalConfirmacion: React.FC<Props> = ({ numero, onConfirmar, onCancelar }) => {
+const ModalConfirmacion: React.FC<Props> = ({
+  numero,
+  onConfirmar,
+  onCancelar,
+  tipo = "confirmacion",
+  mensaje
+}) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -23,24 +31,37 @@ const ModalConfirmacion: React.FC<Props> = ({ numero, onConfirmar, onCancelar })
           exit={{ scale: 0.8, opacity: 0, y: 50 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <h3 className="text-2xl font-bold mb-2">¿Confirmás tu número?</h3>
-          <p className="text-lg mb-4">
-            Comprar el número <span className="text-purple-600 font-extrabold text-2xl">{numero}</span> por <strong>1 WLD</strong>
-          </p>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={onConfirmar}
-              className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition font-semibold"
-            >
-              ✅ Confirmar
-            </button>
-            <button
-              onClick={onCancelar}
-              className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition font-semibold"
-            >
-              ❌ Cancelar
-            </button>
-          </div>
+          {tipo === "confirmacion" ? (
+            <>
+              <h3 className="text-2xl font-bold mb-2">¿Confirmás tu número?</h3>
+              <p className="text-lg mb-4">
+                Comprar el número{" "}
+                <span className="text-purple-600 font-extrabold text-2xl">
+                  {numero}
+                </span>{" "}
+                por <strong>1 WLD</strong>
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={onConfirmar}
+                  className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition font-semibold"
+                >
+                  ✅ Confirmar
+                </button>
+                <button
+                  onClick={onCancelar}
+                  className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition font-semibold"
+                >
+                  ❌ Cancelar
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-2xl font-bold mb-4 text-green-600">¡Compra exitosa! 🎉</h3>
+              <p className="text-lg text-purple-700">{mensaje}</p>
+            </>
+          )}
         </motion.div>
       </motion.div>
     </AnimatePresence>
