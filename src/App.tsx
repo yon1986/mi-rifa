@@ -1,55 +1,21 @@
 // @ts-ignore
 import React, { useState } from 'react';
 import Inicio from './components/Inicio';
-import { IDKitWidget } from '@worldcoin/idkit';
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const App: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
-
-  // Callback cuando se autentica con World ID real
-  const handleSuccess = (response: any) => {
-    console.log("✅ Datos de autenticación:", response);
-    setUserData(response);
-    setIsAuthenticated(true);
-  };
-
-  // Login falso para pruebas
-  const handleFakeLogin = () => {
-    const fakeData = { nullifier_hash: "fake_user_12345" };
-    setUserData(fakeData);
-    setIsAuthenticated(true);
-  };
+  const [sesionIniciada, setSesionIniciada] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      {!isAuthenticated ? (
-        <div className="text-center">
-          <h1 className="text-xl font-bold mb-4">Bienvenido a Mi Rifa</h1>
-
-          {/* Botón normal con World ID */}
-          <IDKitWidget
-            app_id="app_staging_1234" // ID temporal de prueba
-            action="login"
-            signal="login-signal"
-            onSuccess={handleSuccess}
-          >
-            {({ open }) => (
-              <button
-                onClick={open}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
-              >
-                Iniciar sesión con World ID
-              </button>
-            )}
-          </IDKitWidget>
-
-          {/* Botón verde solo para pruebas */}
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-400 text-white">
+      {!sesionIniciada ? (
+        <div className="text-center px-4">
+          <h1 className="text-4xl font-extrabold mb-6">🎉 Bienvenido a la Rifa</h1>
           <button
-            onClick={handleFakeLogin}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-2"
+            onClick={() => setSesionIniciada(true)}
+            className="bg-yellow-400 text-purple-800 px-6 py-3 rounded-2xl text-xl font-bold shadow-lg hover:bg-yellow-300 transition"
           >
-            🔹 Entrar sin QR (prueba)
+            ⏭️ Entrar sin World ID (pruebas)
           </button>
         </div>
       ) : (
@@ -57,6 +23,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;

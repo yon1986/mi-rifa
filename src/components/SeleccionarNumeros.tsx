@@ -7,11 +7,12 @@ interface Props {
   numerosVendidos: number[];
   setNumerosVendidos: React.Dispatch<React.SetStateAction<number[]>>;
   totalNumeros: number;
-  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>; 
+  setTotalNumeros: React.Dispatch<React.SetStateAction<number>>;
   misNumeros: number[];
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
   setSaldoWLD: React.Dispatch<React.SetStateAction<number>>;
+  onListaCompleta: () => void; // 🔹 Nuevo
 }
 
 const SeleccionarNumeros: React.FC<Props> = ({
@@ -22,22 +23,18 @@ const SeleccionarNumeros: React.FC<Props> = ({
   misNumeros,
   setMisNumeros,
   saldoWLD,
-  setSaldoWLD
+  setSaldoWLD,
+  onListaCompleta
 }) => {
   const [numeroSeleccionado, setNumeroSeleccionado] = useState<number | null>(null);
   const [modoManual, setModoManual] = useState<boolean>(true);
 
-  // Nuevo: estado para modal de éxito
   const [mostrarExito, setMostrarExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
   const puedeComprar = () => {
     if (numerosVendidos.length >= totalNumeros) {
       alert("Ya se vendieron todos los números.");
-      return false;
-    }
-    if (misNumeros.length >= 5) {
-      alert("Ya tienes el máximo de 5 números.");
       return false;
     }
     if (saldoWLD <= 0) {
@@ -58,17 +55,21 @@ const SeleccionarNumeros: React.FC<Props> = ({
     setMisNumeros((prev) => [...prev, numero]);
     setSaldoWLD((prev) => prev - 1);
 
-    // Mostrar modal de éxito
     setMensajeExito(`Compraste el número ${numero} correctamente.`);
     setMostrarExito(true);
 
-    // Cerrar modal de confirmación
     setNumeroSeleccionado(null);
 
-    // Cerrar modal de éxito automáticamente
     setTimeout(() => {
       setMostrarExito(false);
     }, 2000);
+
+    // 🔹 Si ya se vendieron todos los números, avisamos a Inicio.tsx
+    setTimeout(() => {
+      if (numerosVendidos.length + 1 === totalNumeros) {
+        onListaCompleta();
+      }
+    }, 500);
   };
 
   const comprarAleatorio = () => {
@@ -97,7 +98,7 @@ const SeleccionarNumeros: React.FC<Props> = ({
 
       <p className="text-lg mb-1">💰 Saldo actual: <span className="font-bold">{saldoWLD} WLD</span></p>
       <p className="text-lg mb-1">🎯 Faltan <span className="font-bold">{totalNumeros - numerosVendidos.length}</span> números para cerrar la rifa.</p>
-      <p className="text-lg mb-4">📌 Máximo 5 números por jugador.</p>
+      <p className="text-lg mb-4">📌 Puedes comprar todos los números que quieras.</p>
 
       <button
         onClick={() => setModoManual(!modoManual)}
@@ -173,7 +174,6 @@ const SeleccionarNumeros: React.FC<Props> = ({
         🔙 Volver
       </button>
 
-      {/* Modal de confirmación */}
       {numeroSeleccionado !== null && (
         <ModalConfirmacion
           numero={numeroSeleccionado}
@@ -183,7 +183,6 @@ const SeleccionarNumeros: React.FC<Props> = ({
         />
       )}
 
-      {/* Modal de éxito */}
       {mostrarExito && (
         <ModalConfirmacion
           tipo="exito"
