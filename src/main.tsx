@@ -3,13 +3,13 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-// Importamos el UserProvider del SDK de World App
-import { UserProvider } from '@worldcoin/id'
+// Importamos el MiniKitProvider
+import { MiniKitProvider } from '@worldcoin/minikit-react'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UserProvider>
+    <MiniKitProvider>
       <App />
-    </UserProvider>
+    </MiniKitProvider>
   </StrictMode>
 )
