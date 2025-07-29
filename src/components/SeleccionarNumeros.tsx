@@ -12,7 +12,7 @@ interface Props {
   setMisNumeros: React.Dispatch<React.SetStateAction<number[]>>;
   saldoWLD: number;
   setSaldoWLD: React.Dispatch<React.SetStateAction<number>>;
-  onListaCompleta: () => void; 
+  onListaCompleta: () => void;
 }
 
 const SeleccionarNumeros: React.FC<Props> = ({
@@ -32,13 +32,19 @@ const SeleccionarNumeros: React.FC<Props> = ({
   const [mostrarExito, setMostrarExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
+  // Nuevo: modal de error bonito
+  const [mostrarError, setMostrarError] = useState(false);
+  const [mensajeError, setMensajeError] = useState("");
+
   const puedeComprar = (): boolean => {
     if (numerosVendidos.length >= totalNumeros) {
-      alert("Ya se vendieron todos los números.");
+      setMensajeError("Ya se vendieron todos los números.");
+      setMostrarError(true);
       return false;
     }
     if (saldoWLD <= 0) {
-      alert("No tienes saldo suficiente para adquirir otro número.");
+      setMensajeError("No tienes saldo suficiente para adquirir otro número.");
+      setMostrarError(true);
       return false;
     }
     return true;
@@ -46,7 +52,8 @@ const SeleccionarNumeros: React.FC<Props> = ({
 
   const procesarCompra = (numero: number) => {
     if (numerosVendidos.includes(numero)) {
-      alert("Ese número ya fue adquirido.");
+      setMensajeError("Ese número ya fue adquirido.");
+      setMostrarError(true);
       setNumeroSeleccionado(null);
       return;
     }
@@ -201,6 +208,15 @@ const SeleccionarNumeros: React.FC<Props> = ({
 
       {mostrarExito && (
         <ModalConfirmacion tipo="exito" mensaje={mensajeExito} />
+      )}
+
+      {/* Modal de error bonito */}
+      {mostrarError && (
+        <ModalConfirmacion
+          tipo="exito"
+          mensaje={mensajeError}
+          onCancelar={() => setMostrarError(false)}
+        />
       )}
     </div>
   );
